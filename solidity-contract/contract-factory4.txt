@@ -1,0 +1,9 @@
+pragma solidity 0.5.17;
+
+import "./factory.sol";
+import "./factory2.sol";
+
+contract Factory4 is Factory,Factory2{
+    constructor (uint8 decimals ,uint256 amount ,string memory name, string memory symbol) public Factory(decimals,amount) Factory2(name, symbol) {
+    }
+}

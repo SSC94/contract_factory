@@ -1,0 +1,71 @@
+pragma solidity ^0.5.0;
+
+contract Sample1{
+    uint public t;
+    
+    constructor() public {
+        
+    }
+    event L(uint a, uint b, address c);
+    
+    function test(uint a, uint b) public returns(uint){
+        t= a+b;
+        emit L(a,b,msg.sender);
+        return a+b;
+    }
+}
+
+contract Sample2 {
+    uint public t;
+    
+    constructor() public {
+        
+    }
+    
+    function callTest(address contractAddress, uint to, uint value) public returns(bool, bytes memory, address){
+        (bool success, bytes memory data) = address(contractAddress).call(abi.encodeWithSignature("test(uint256,uint256)",to,value));
+        
+        if(!success){
+            revert();
+        }
+        
+        return (success,data,contractAddress);
+    }
+    function delegatecallTest(address contractAddress, uint to, uint value) public returns(bool, bytes memory, address){
+        (bool success, bytes memory data) = address(contractAddress).delegatecall(abi.encodeWithSignature("test(uint256,uint256)",to,value));
+        
+        if(!success){
+            revert();
+        }
+        
+        return (success,data,contractAddress);
+    }
+    function kip7MintCall(address contractAddress,address account,uint256 amount) public returns(bool, bytes memory, address){
+        (bool success, bytes memory data) = address(contractAddress).call(abi.encodeWithSignature("mint(address,uint256)",account,amount));
+        if(!success){
+            revert();
+        }
+        return (success,data,contractAddress);
+    }
+    function kip7MintDelegatecall(address contractAddress,address account,uint256 amount) public returns(bool, bytes memory, address){
+        (bool success, bytes memory data) = address(contractAddress).delegatecall(abi.encodeWithSignature("mint(address,uint256)",account,amount));
+        if(!success){
+            revert();
+        }
+        return (success,data,contractAddress);
+    }
+    function delegatecallAdder(address contractAddress,uint256 to,uint256 value) public returns(bool, bytes memory, address){
+        (bool success, bytes memory data) = address(contractAddress).delegatecall(abi.encodeWithSignature("adder(uint256,uint256)",to,value));
+        if(!success){
+            revert();
+        }
+        return (success,data,contractAddress);
+    }
+    function callAdder(address contractAddress,uint256 to,uint256 value) public returns(bool, bytes memory, address){
+        (bool success, bytes memory data) = address(contractAddress).call(abi.encodeWithSignature("adder(uint256,uint256)",to,value));
+        if(!success){
+            revert();
+        }
+        return (success,data,contractAddress);
+    }
+}

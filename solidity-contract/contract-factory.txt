@@ -1,0 +1,54 @@
+pragma solidity 0.5.17;
+
+import "../KIP7/KIP7Token.sol";
+//import "../KIP17/KIP17Token.sol";
+
+contract Factory {
+
+    mapping(address => KIP7Token) private KIP7;
+    
+    modifier onlyOwner(){
+        require (KIP7[msg.sender] != KIP7Token(0));
+        _;
+    }
+    
+    constructor(uint8 decimals, uint256 amount) public{
+        KIP7[msg.sender] = new KIP7Token("br","br",decimals,amount);
+    }
+
+    // constructor(string memory name, string memory symbol, uint8 decimals, uint256 initialSupply) public{
+    //     KIP7[msg.sender] = new KIP7Token(name,symbol, decimals,  initialSupply);
+    // }
+    // function createCounter(string memory name, string memory symbol, uint8 decimals, uint256 initialSupply) public {
+    //     require (_counters[msg.sender] == KIP7Token(0));
+    //     _counters[msg.sender] = new KIP7Token(name,symbol, decimals,  initialSupply);
+    // }
+
+    function mint(address account,uint256 amount) public onlyOwner{
+        KIP7Token(KIP7[msg.sender]).mint(account,amount);
+    }
+    
+    function transfer(address to, uint256 value) public onlyOwner{
+        KIP7Token(KIP7[msg.sender]).transfer(to,value);
+    }
+    
+    // function balanceOf(address account) public view returns (uint256){
+    //     uint256 a;
+    //     require (KIP7[msg.sender] != KIP7Token(0));
+    //     return KIP7Token(_counters[msg.sender])._balances[account];
+    // }
+    
+    function totalSupply() public onlyOwner view returns (uint256){
+        return KIP7Token(KIP7[msg.sender])._totalSupply();
+    }
+
+    // function getCount(address account) public view returns (uint256) {
+    //     require (KIP7[account] != Counter(0));
+    //     return (KIP7[account].getCount());
+    // }
+
+    // function getMyCount() public view returns (uint256) {
+    //     return (getCount(msg.sender));
+    // }
+
+}
